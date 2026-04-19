@@ -4,16 +4,11 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.sql.DataSource;
 
-import finalproject.Users.UserLogin;
-import jakarta.inject.Inject;
-
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ChannelDAO {
-    @Inject
-    private UserLogin login;
     private DataSource dataSource;
 
     public ChannelDAO() {

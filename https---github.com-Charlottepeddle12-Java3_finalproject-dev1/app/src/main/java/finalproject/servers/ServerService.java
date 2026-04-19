@@ -9,7 +9,6 @@ import jakarta.inject.Inject;
 import jakarta.inject.Named;
 import javax.naming.Context;
 import javax.naming.InitialContext;
-import javax.naming.NamingException;
 import javax.sql.DataSource;
 import java.io.Serializable;
 import java.sql.*;
@@ -23,12 +22,9 @@ public class ServerService implements Serializable {
     private UserLogin login;
     private Connection conn;
     private List<Invite> myInvites = new ArrayList<>();
-    private int serverID;
     private String serverName;
     private boolean publicServer;
     private String message = "";
-    private String targetUserName;
-    private int inviteID;
     private List<Server> servers = new ArrayList<>();
     private List<Server> publicServers = new ArrayList<>();
     private String inviteServerName;
@@ -271,14 +267,12 @@ public class ServerService implements Serializable {
         try (PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, userId);
             try (ResultSet rs = stmt.executeQuery()) {
-                int count = 0;
                 while (rs.next()) {
                     Invite invite = new Invite();
                     invite.setInviteID(rs.getInt("inviteID"));
                     invite.setServerName(rs.getString("serverName"));
                     invite.setInviterName(rs.getString("inviterName"));
                     invites.add(invite);
-                    count++;
                 }
             }
         } catch (SQLException e) {
