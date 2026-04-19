@@ -1,0 +1,104 @@
+For server:
+Users can create public or private servers.
+Public servers: anyone can join/leave, no permissions needed.
+Private servers: creator is admin. 
+Only admin can delete server and channels (both public and private). 
+Admin can invite/kick users by username, and grant invite/kick permission to others, delete server, give permissions to create text channels.
+Any user can leave a private/public server.
+Only admin can grant permissions; no one else. Currently not supporitng multiple admins.
+If admin leaves, he has to transfer admin permissions to another user before leaving, otherwise the server will be deleted.
+Anyone in the server has access to all channels in that server, but only users with permissions can create channels.
+User Roles in servers: Admin, Invite Permission in Server, Kick Permission from Server, Create Text Channel Permission, Membership (no permissions).
+When a user is deleted, their memberships and invites are removed.
+If a server is deleted, all channels and memberships and invites for that server are removed.
+below all are server specifc:
+Buttons: Load Invites and Clear Invites.
+Buttons: Accept and Decline the invite. Can be beside each invite in the list of invites. 
+Button: Invite User, which opens a prompt to enter username to invite to server. Will be disabled if user doesn't have invite permissions. Also will not let send permission to someone who is blocked by the user or has blocked the user- it will say username invalid.
+Button: Load users in server. Can have a search bar to filter users by username. Can click to to open another button to kick users if they have permissions.
+Button: Kick User, which opens a prompt to enter username to kick. Will be disabled if user doesn't have kick permissions.
+Button: : Delete Servers. Will be disabled if user doesn't have delete permissions.
+Button:  Create Text Channel. Will be disabled if user doesn't have permissions to create text channels.
+Button: Load public servers which they are not part of. Can have a search bar to filter servers by name. Can click to join to open a button for public servers. 
+Button : To join the public server.
+Button : Load public and private servers they are part of. Can have a search bar to filter servers by name. Can click to leave servers.
+Admin will have a permision checkbox where they:
+1. will search user name and check the permissions they want to give to that user. 
+2. If they uncheck all permissions, that user will just be a member of the server with no permissions. 
+3. If they check any permissions, that user will have those permissions in the server. 
+4. If they check delete server permission, that user will also have delete server permission. 
+5.If they uncheck delete server permission, that user will lose delete server permission but can still have other permissions if those are checked.
+Admin can see all members and all messges in server even if they had blocked them or blocked by them.
+
+
+For Channels:
+Users can create text channels within servers if they have permissions in servers.
+Users can only see channels in servers they are members of.
+User can see all chnnels in a server if they are a member of that server.
+If kicked from a server, user can no longer see any channels in that server.
+For sql:
+When a channel is deleted, all messages in that channel are also deleted.
+When a user is deleted, all messages will remain but will show user not available instead of username.
+When a server is deleted, all channels and messages in that server are also deleted.
+Admin can see all members and all messges in server even if they had blocked them or blocked by them.
+
+
+For Messages:
+Users can text anyone unless they are blocked by that user or they have blocked that user.
+Users can only see messages in channels of servers they are members of.
+Users can not see messages of users in the channels if they are blocked by that user or they have blocked that user.
+Admin can see all members and all messges in server even if they had blocked them or blocked by them.
+Images can messages too. So have a button to upload an image when sending a message. The image will be stored in the database as a blob and can be retrieved and displayed in the channel.
+When a user is deleted, all messages will remain but will show user not available instead of username
+
+
+SQL Relationships Overview
+1. users
+Primary Table: All other tables reference users.
+Cascade: Deleting a user removes their memberships, roles, invites, friendships, blocks, and sets their messages’ sender to NULL.
+2. friends
+Relationship: Many-to-many between users.
+Cascade: If either user is deleted, the friendship is deleted.
+Constraint: No self-friendship.
+3. blocks
+Relationship: Many-to-many between users.
+Cascade: If either user is deleted, the block is deleted.
+Constraint: No self-blocking.
+Trigger: Blocking a user deletes any friendship between them.
+4. servers
+Relationship: Each server has an owner (user).
+Cascade: If the owner is deleted, ownerID is set to NULL.
+Cascade: Deleting a server removes all its channels, roles, invites, memberships, and messages.
+5. server_members
+Relationship: Many-to-many between users and servers.
+Cascade: Deleting a user or server removes the membership.
+6. server_roles
+Relationship: Each role belongs to a server.
+Cascade: Deleting a server removes its roles.
+7. server_member_roles
+Relationship: Many-to-many between server_members and server_roles.
+Cascade: Deleting a membership or role removes the assignment.
+8. server_invites
+Relationship: Invites link users and servers, and reference the inviter (must be a member).
+Cascade: Deleting a user or server removes related invites.
+9. channels
+Relationship: Each channel belongs to a server and may have a creator (user).
+Cascade: Deleting a server removes its channels.
+Cascade: Deleting the creator sets created_by to NULL.
+10. channel_role_permissions
+Relationship: Links channels and roles for permissions.
+Cascade: Deleting a channel or role removes related permissions.
+11. direct_conversations
+Relationship: Each conversation is between two users.
+Cascade: Deleting either user removes the conversation.
+Constraint: No self-conversation.
+12. messages
+Relationship: Each message belongs to either a channel or a direct conversation, and has a sender (user).
+Cascade: Deleting a channel or conversation removes related messages.
+Cascade: Deleting the sender sets senderID to NULL.
+Constraint: Message must belong to either a channel or a conversation, not both.
+13. Triggers
+trg_servers_after_insert_bootstrap: When a server is created, default roles and memberships are set up.
+trg_server_members_after_insert_assign_default_role: When a member joins, they get the default role.
+trg_blocks_after_insert_remove_friendship: Blocking a user deletes any friendship between them.
+

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:f="jakarta.faces.core"
+      xmlns:ui="jakarta.faces.facelets">
+
+<h:head>
+    <title>Chat | Community Hub</title>
+</h:head>
+
+<h:body style="margin:0; font-family:Arial,Helvetica,sans-serif; background:#0f172a; color:#e2e8f0;">
+    <f:viewAction action="#{messageBean.loadMessages}" />
+    <div style="max-width:1080px; margin:0 auto; padding:24px; display:flex; flex-direction:column; gap:20px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; gap:14px; flex-wrap:wrap;">
+            <div>
+                <h1 style="margin:0; font-size:32px;">Community Chat</h1>
+                <p style="margin:8px 0 0; color:#94a3b8;">Send messages to your active channel.</p>
+            </div>
+            <h:link outcome="dashboard.xhtml" value="Back to Dashboard"
+                    style="padding:12px 18px; background:#2563eb; color:white; border-radius:14px; text-decoration:none; font-weight:700;" />
+        </div>
+
+        <div style="background:#111827; border-radius:24px; box-shadow:0 30px 70px rgba(0,0,0,0.35); overflow:hidden;">
+            <div style="padding:24px;">
+                <h2 style="margin-top:0;">Channel #1</h2>
+                <h:outputText value="#{messageBean.message}" style="display:block; color:#f97316; margin-bottom:16px;" />
+                <div style="display:grid; gap:14px;">
+                    <ui:repeat value="#{messageBean.messages}" var="msg">
+                        <div style="padding:16px; border-radius:18px; background:#1f2937;">
+                            <div style="display:flex; justify-content:space-between; gap:12px; align-items:center;">
+                                <strong style="color:#f8fafc;">#{msg.username}</strong>
+                                <span style="color:#94a3b8; font-size:0.9rem;">#{msg.sentOn}</span>
+                            </div>
+                            <p style="margin:10px 0 0; color:#e2e8f0;">#{msg.messageText}</p>
+                        </div>
+                    </ui:repeat>
+                    <h:panelGroup rendered="#{empty messageBean.messages}">
+                        <div style="padding:20px; border-radius:18px; background:#1f2937; color:#cbd5e1; text-align:center;">
+                            No messages yet. Send the first message to start the conversation.
+                        </div>
+                    </h:panelGroup>
+                </div>
+            </div>
+            <div style="background:#111827; padding:24px; border-top:1px solid #334155;">
+                <h:form>
+                    <h:inputHidden value="#{messageBean.channelID}" />
+                    <div style="display:flex; flex-wrap:wrap; gap:16px;">
+                        <h:inputText id="newMessage" value="#{messageBean.messageText}"
+                                     style="flex:1 1 320px; padding:14px; border:1px solid #334155; border-radius:14px; background:#0f172a; color:#e2e8f0;" />
+                        <h:commandButton value="Send Message" action="#{messageBean.sendMessage}"
+                                         style="padding:14px 22px; background:#2563eb; color:white; border:none; border-radius:14px; font-weight:700; cursor:pointer;" />
+                    </div>
+                </h:form>
+            </div>
+        </div>
+    </div>
+</h:body>
+</html>

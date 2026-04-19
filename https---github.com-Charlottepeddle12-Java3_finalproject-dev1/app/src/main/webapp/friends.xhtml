@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:f="jakarta.faces.core"
+      xmlns:ui="jakarta.faces.facelets">
+
+<h:head>
+    <title>Friends | Community Hub</title>
+</h:head>
+
+<h:body style="margin:0; font-family:Arial,Helvetica,sans-serif; background:#f8fafc; color:#0f172a;">
+    <f:metadata>
+        <f:viewAction action="#{friendsBean.loadFriendNames}" />
+        <f:viewAction action="#{friendsBean.loadReceivedFriendRequests}" />
+        <f:viewAction action="#{friendsBean.loadSentFriendRequests}" />
+    </f:metadata>
+
+    <div style="max-width:1080px; margin:32px auto; padding:24px; background:white; border-radius:24px; box-shadow:0 24px 60px rgba(15,23,42,0.08);">
+        <div style="display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap;">
+            <div>
+                <h1 style="margin:0; font-size:28px;">Friends</h1>
+                <p style="margin:8px 0 0; color:#475569;">Review your friend list and manage requests.</p>
+            </div>
+            <h:link outcome="dashboard.xhtml" value="Back to Dashboard"
+                    style="padding:12px 18px; background:#2563eb; color:white; border-radius:14px; text-decoration:none; font-weight:700;" />
+        </div>
+
+        <h:outputText value="#{friendsBean.sendMessage}" style="display:block; color:#b91c1c; margin:18px 0 0;" />
+        <h:outputText value="#{friendsBean.acceptMessage}" style="display:block; color:#b91c1c; margin:8px 0 18px;" />
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:24px; margin-top:24px;">
+            <div style="padding:24px; background:#f1f5f9; border-radius:20px;">
+                <h2 style="margin-top:0;">Send Friend Request</h2>
+                <h:form>
+                    <div style="margin-bottom:18px;">
+                        <h:outputLabel for="sendFriend" value="Username" style="display:block; margin-bottom:8px; font-weight:600; color:#0f172a;" />
+                        <h:inputText id="sendFriend" value="#{friendsBean.sendFriendUserName}"
+                                     style="width:100%; padding:14px; border:1px solid #cbd5e1; border-radius:14px;" required="true" />
+                    </div>
+                    <h:commandButton value="Send Request" action="#{friendsBean.sendFriendRequest}"
+                                     style="padding:12px 18px; background:#2563eb; color:white; border:none; border-radius:14px; font-weight:700; cursor:pointer;" />
+                </h:form>
+            </div>
+            <div style="padding:24px; background:#f1f5f9; border-radius:20px;">
+                <h2 style="margin-top:0;">Accept Requests</h2>
+                <h:form>
+                    <div style="margin-bottom:18px;">
+                        <h:outputLabel for="acceptFriend" value="Requester username" style="display:block; margin-bottom:8px; font-weight:600; color:#0f172a;" />
+                        <h:inputText id="acceptFriend" value="#{friendsBean.acceptFriendUserName}"
+                                     style="width:100%; padding:14px; border:1px solid #cbd5e1; border-radius:14px;" required="true" />
+                    </div>
+                    <h:commandButton value="Accept Request" action="#{friendsBean.acceptFriendRequest}"
+                                     style="padding:12px 18px; background:#16a34a; color:white; border:none; border-radius:14px; font-weight:700; cursor:pointer; margin-right:8px;" />
+                    <h:commandButton value="Decline Request" action="#{friendsBean.declineFriendRequest}"
+                                     style="padding:12px 18px; background:#ef4444; color:white; border:none; border-radius:14px; font-weight:700; cursor:pointer;" />
+                </h:form>
+            </div>
+        </div>
+
+        <div style="margin-top:32px; display:grid; gap:20px;">
+            <div style="padding:22px; background:#e2e8f0; border-radius:20px;">
+                <h3 style="margin:0 0 12px 0;">Friends (#{friendsBean.friendCount})</h3>
+                <ui:repeat value="#{friendsBean.friendNames}" var="friend">
+                    <div style="padding:12px 0; border-bottom:1px solid #cbd5e1; color:#0f172a;">#{friend}</div>
+                </ui:repeat>
+                <h:panelGroup rendered="#{empty friendsBean.friendNames}">
+                    <div style="padding:12px 0; color:#475569;">No friends yet.</div>
+                </h:panelGroup>
+            </div>
+            <div style="padding:22px; background:#e2e8f0; border-radius:20px;">
+                <h3 style="margin:0 0 12px 0;">Pending Requests</h3>
+                <ui:repeat value="#{friendsBean.receivedFriendRequests}" var="request">
+                    <div style="padding:12px 0; border-bottom:1px solid #cbd5e1; color:#0f172a;">#{request}</div>
+                </ui:repeat>
+                <h:panelGroup rendered="#{empty friendsBean.receivedFriendRequests}">
+                    <div style="padding:12px 0; color:#475569;">No incoming requests.</div>
+                </h:panelGroup>
+            </div>
+        </div>
+    </div>
+</h:body>
+</html>

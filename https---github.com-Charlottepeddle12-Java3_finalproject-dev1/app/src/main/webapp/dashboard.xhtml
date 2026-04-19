@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:ui="jakarta.faces.facelets">
+
+<h:head>
+    <title>Dashboard | Community Hub</title>
+</h:head>
+
+<h:body style="margin:0; font-family:Arial,Helvetica,sans-serif; background:#f8fafc; color:#0f172a;">
+    <div style="background:#1e40af; color:white; padding:32px 24px;">
+        <div style="max-width:1080px; margin:0 auto; display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:16px;">
+            <div>
+                <h1 style="margin:0; font-size:34px;">Hello, #{userLoginBean.userName}</h1>
+                <p style="margin:8px 0 0; opacity:0.87;">Your collaboration dashboard is ready.</p>
+            </div>
+            <h:form>
+                <h:commandButton value="Logout" action="#{userLoginBean.logout}"
+                                 style="padding:12px 22px; background:#ef4444; color:white; border:none; border-radius:14px; font-weight:700; cursor:pointer;" />
+            </h:form>
+        </div>
+    </div>
+
+    <div style="max-width:1080px; margin:28px auto; padding:0 24px; display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:20px;">
+        <div style="background:white; border-radius:24px; padding:26px; box-shadow:0 18px 45px rgba(15,23,42,0.08);">
+            <h2 style="margin-top:0;">Servers</h2>
+            <p style="color:#475569;">Create, join, and manage your server groups.</p>
+            <h:link outcome="server.xhtml" value="View servers"
+                    style="display:inline-block; margin-top:16px; padding:12px 18px; background:#2563eb; color:white; border-radius:14px; text-decoration:none; font-weight:700;" />
+        </div>
+        <div style="background:white; border-radius:24px; padding:26px; box-shadow:0 18px 45px rgba(15,23,42,0.08);">
+            <h2 style="margin-top:0;">Channels</h2>
+            <p style="color:#475569;">Browse channels inside your servers and add new ones.</p>
+            <h:link outcome="channels.xhtml" value="View channels"
+                    style="display:inline-block; margin-top:16px; padding:12px 18px; background:#2563eb; color:white; border-radius:14px; text-decoration:none; font-weight:700;" />
+        </div>
+        <div style="background:white; border-radius:24px; padding:26px; box-shadow:0 18px 45px rgba(15,23,42,0.08);">
+            <h2 style="margin-top:0;">Friends</h2>
+            <p style="color:#475569;">Manage friend connections and pending invites.</p>
+            <h:link outcome="friends.xhtml" value="View friends"
+                    style="display:inline-block; margin-top:16px; padding:12px 18px; background:#2563eb; color:white; border-radius:14px; text-decoration:none; font-weight:700;" />
+        </div>
+        <div style="background:white; border-radius:24px; padding:26px; box-shadow:0 18px 45px rgba(15,23,42,0.08);">
+            <h2 style="margin-top:0;">Chat</h2>
+            <p style="color:#475569;">Open the chat room to send and receive messages.</p>
+            <h:link outcome="chat.xhtml" value="Open chat"
+                    style="display:inline-block; margin-top:16px; padding:12px 18px; background:#2563eb; color:white; border-radius:14px; text-decoration:none; font-weight:700;" />
+        </div>
+        <div style="background:white; border-radius:24px; padding:26px; box-shadow:0 18px 45px rgba(15,23,42,0.08);">
+            <h2 style="margin-top:0;">Direct Messages</h2>
+            <p style="color:#475569;">Send private messages to a friend in the system.</p>
+            <h:link outcome="dm.xhtml" value="Send DM"
+                    style="display:inline-block; margin-top:16px; padding:12px 18px; background:#2563eb; color:white; border-radius:14px; text-decoration:none; font-weight:700;" />
+        </div>
+        <div style="background:white; border-radius:24px; padding:26px; box-shadow:0 18px 45px rgba(15,23,42,0.08);">
+            <h2 style="margin-top:0;">Block List</h2>
+            <p style="color:#475569;">Block or unblock users directly from your account.</p>
+            <h:link outcome="block.xhtml" value="Manage blocks"
+                    style="display:inline-block; margin-top:16px; padding:12px 18px; background:#2563eb; color:white; border-radius:14px; text-decoration:none; font-weight:700;" />
+        </div>
+    </div>
+</h:body>
+</html>

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="jakarta.faces.html"
+      xmlns:ui="jakarta.faces.facelets">
+<h:head>
+    <title>Register | Community Hub</title>
+</h:head>
+
+<h:body style="margin:0; font-family:Arial,Helvetica,sans-serif; background:#f8fafc;">
+<div style="min-height:100vh; display:flex; align-items:center; justify-content:center; padding:32px;">
+    <div style="width:100%; max-width:420px; background:#ffffff; border-radius:24px; box-shadow:0 24px 70px rgba(15,23,42,0.12); overflow:hidden;">
+        <div style="background:#1d4ed8; color:#ffffff; padding:32px;">
+            <h1 style="margin:0; font-size:30px;">Create Account</h1>
+            <p style="margin:8px 0 0; opacity:0.85;">Register to access servers, friends and messages.</p>
+        </div>
+        <div style="padding:32px;">
+            <h:form>
+                <h:outputText value="#{userLoginBean.message}" style="display:block; color:#b91c1c; margin-bottom:18px;" />
+                <div style="margin-bottom:18px;">
+                    <h:outputLabel for="username" value="Username" style="display:block; margin-bottom:8px; font-weight:600; color:#0f172a;" />
+                    <h:inputText id="username" value="#{userLoginBean.userName}" required="true"
+                                 style="width:100%; padding:14px; border:1px solid #cbd5e1; border-radius:14px;" />
+                </div>
+                <div style="margin-bottom:22px;">
+                    <h:outputLabel for="password" value="Password" style="display:block; margin-bottom:8px; font-weight:600; color:#0f172a;" />
+                    <h:inputSecret id="password" value="#{userLoginBean.userPassword}" required="true"
+                                   style="width:100%; padding:14px; border:1px solid #cbd5e1; border-radius:14px;" />
+                </div>
+                <h:commandButton value="Register" action="#{userLoginBean.signup}"
+                                 style="width:100%; padding:14px; background:#16a34a; color:#ffffff; border:none; border-radius:14px; font-weight:700; cursor:pointer;" />
+            </h:form>
+            <div style="margin-top:22px; text-align:center; color:#64748b; font-size:0.95rem;">
+                Already registered? <h:link outcome="login.xhtml" value="Sign in" style="color:#1d4ed8; text-decoration:none; font-weight:700;" />
+            </div>
+        </div>
+    </div>
+</div>
+</h:body>
+</html>
