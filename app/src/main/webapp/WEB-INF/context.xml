@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Context>
+
+    <Resource name="jdbc/java_project"
+              auth="Container"
+              type="javax.sql.DataSource"
+              driverClassName="com.mysql.cj.jdbc.Driver"
+              url="jdbc:mysql://localhost:3308/java_project?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC&cachingsha2PasswordConfig=false"
+              username="root"
+              password="Lynn"
+              maxTotal="20"
+              maxIdle="10"
+              maxWaitMillis="-1"/>
+
+</Context>
