@@ -3,6 +3,13 @@ package finalproject.Users;
 import jakarta.enterprise.context.SessionScoped;
 import jakarta.inject.Named;
 import java.io.Serializable;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.sql.DataSource;
+import at.favre.lib.crypto.bcrypt.BCrypt;
 
 @Named("userLoginBean")
 @SessionScoped
@@ -11,52 +18,117 @@ public class UserLogin implements Serializable {
     private String userName;
     private String userPassword;
     private String message;
-
-    // 🔥 FIXED: must be int (NOT String)
     private int userId;
+    private DataSource dataSource;
 
-    // ======================
-    // NAVIGATION METHODS
-    // ======================
+    public UserLogin() {
+        try {
+            Context ctx = new InitialContext();
+            dataSource = (DataSource) ctx.lookup("java:comp/env/jdbc/java_project");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     public String login() {
-        // You can later add DB validation here
-        if (userName == null || userName.isBlank()) {
+        if (userName == null || userName.trim().isEmpty()) {
             message = "Enter username";
             return null;
         }
 
-        if (userPassword == null || userPassword.isBlank()) {
+        if (userPassword == null || userPassword.trim().isEmpty()) {
             message = "Enter password";
             return null;
         }
 
-        // TEMP: simulate login success
-        userId = 1; // ⚠️ replace with DB lookup later
-        message = null;
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(
+                     "SELECT id, password FROM users WHERE username = ?")) {
 
-        return "dashboard.xhtml?faces-redirect=true";
+            stmt.setString(1, userName);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                int dbUserId = rs.getInt("id");
+                String storedPassword = rs.getString("password");
+
+                BCrypt.Result result = BCrypt.verifyer()
+                        .verify(userPassword.toCharArray(), storedPassword);
+
+                if (result.verified) {
+                    this.userId = dbUserId;
+                    message = null;
+                    return "dashboard.xhtml?faces-redirect=true";
+                } else {
+                    message = "Invalid username or password";
+                    return null;
+                }
+            } else {
+                message = "Invalid username or password";
+                return null;
+            }
+
+        } catch (Exception e) {
+            message = "Login failed: " + e.getMessage();
+            e.printStackTrace();
+            return null;
+        }
     }
 
     public String signup() {
-        // You can add DB insert here later
-        message = "Account created. Please login.";
-        return "login.xhtml?faces-redirect=true";
+        if (userName == null || userName.trim().isEmpty()) {
+            message = "Enter username";
+            return null;
+        }
+
+        if (userPassword == null || userPassword.trim().isEmpty()) {
+            message = "Enter password";
+            return null;
+        }
+
+        if (userPassword.length() < 6) {
+            message = "Password must be at least 6 characters";
+            return null;
+        }
+
+        try (Connection conn = dataSource.getConnection()) {
+            try (PreparedStatement checkStmt = conn.prepareStatement(
+                    "SELECT id FROM users WHERE username = ?")) {
+                checkStmt.setString(1, userName);
+                ResultSet rs = checkStmt.executeQuery();
+                if (rs.next()) {
+                    message = "Username already exists";
+                    return null;
+                }
+            }
+
+            String hashedPassword = BCrypt.withDefaults()
+                    .hashToString(12, userPassword.toCharArray());
+
+            try (PreparedStatement insertStmt = conn.prepareStatement(
+                    "INSERT INTO users (username, password) VALUES (?, ?)")) {
+                insertStmt.setString(1, userName);
+                insertStmt.setString(2, hashedPassword);
+                insertStmt.executeUpdate();
+            }
+
+            message = "Account created successfully. Please login.";
+            return "login.xhtml?faces-redirect=true";
+
+        } catch (Exception e) {
+            message = "Registration failed: " + e.getMessage();
+            e.printStackTrace();
+            return null;
+        }
     }
 
     public String logout() {
-        // 🔥 clear session data
         userName = null;
         userPassword = null;
         userId = 0;
         message = null;
-
         return "login.xhtml?faces-redirect=true";
     }
-
-    // ======================
-    // GETTERS & SETTERS
-    // ======================
 
     public String getUserName() {
         return userName;
@@ -82,7 +154,6 @@ public class UserLogin implements Serializable {
         this.message = message;
     }
 
-   
     public int getUserId() {
         return userId;
     }

@@ -1,6 +1,6 @@
-DROP DATABASE IF EXISTS javaproject;
-CREATE DATABASE IF NOT EXISTS javaproject;
-USE javaproject;
+DROP DATABASE IF EXISTS java_project;
+CREATE DATABASE IF NOT EXISTS java_project;
+USE java_project;
 
 -- Drop tables in correct order (reverse dependency order)
 DROP TABLE IF EXISTS channel_role_permissions;

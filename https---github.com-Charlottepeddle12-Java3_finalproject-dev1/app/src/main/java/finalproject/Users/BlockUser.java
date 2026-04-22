@@ -34,7 +34,7 @@ public class BlockUser implements Serializable {
     public void openConnection() {
         try {
             Context ctx = new InitialContext();
-            DataSource ds = (DataSource) ctx.lookup("java:/comp/env/jdbc/javaproject");
+            DataSource ds = (DataSource) ctx.lookup("java:/comp/env/jdbc/java_project");
             conn = ds.getConnection();
         } catch (NamingException | SQLException e) {
             message = e.getMessage();
@@ -68,20 +68,20 @@ public class BlockUser implements Serializable {
             return;
         }
 
-        try (PreparedStatement findUser = conn.prepareStatement("SELECT userID FROM users WHERE username = ?")) {
+        try (PreparedStatement findUser = conn.prepareStatement("SELECT id FROM users WHERE username = ?")) {
             findUser.setString(1, blockedUserName);
             try (ResultSet userResult = findUser.executeQuery()) {
                 if (!userResult.next()) {
                     message = "Enter correct username.";
                     return;
                 }
-                int blockedId = userResult.getInt("userID");
+                int blockedId = userResult.getInt("id");
                 if (blockedId == login.getUserId()) {
                     message = "You cannot block yourself.";
                     return;
                 }
                 try (PreparedStatement checkExisting = conn.prepareStatement(
-                        "SELECT 1 FROM blocks WHERE userID = ? AND blockedID = ?")) {
+                        "SELECT 1 FROM blocks WHERE id = ? AND blockedID = ?")) {
                     checkExisting.setInt(1, login.getUserId());
                     checkExisting.setInt(2, blockedId);
                     try (ResultSet existing = checkExisting.executeQuery()) {
@@ -92,7 +92,7 @@ public class BlockUser implements Serializable {
                     }
                 }
                 try (PreparedStatement checkReverseBlock = conn.prepareStatement(
-                        "SELECT 1 FROM blocks WHERE userID = ? AND blockedID = ?")) {
+                        "SELECT 1 FROM blocks WHERE id = ? AND blockedID = ?")) {
                     checkReverseBlock.setInt(1, blockedId);
                     checkReverseBlock.setInt(2, login.getUserId());
                     try (ResultSet reverse = checkReverseBlock.executeQuery()) {
@@ -103,7 +103,7 @@ public class BlockUser implements Serializable {
                     }
                 }
                 try (PreparedStatement insertBlock = conn.prepareStatement(
-                        "INSERT INTO blocks (userID, blockedID) VALUES (?, ?)")) {
+                        "INSERT INTO blocks (id, blockedID) VALUES (?, ?)")) {
                     insertBlock.setInt(1, login.getUserId());
                     insertBlock.setInt(2, blockedId);
                     int rowsAffected = insertBlock.executeUpdate();
@@ -136,7 +136,7 @@ public class BlockUser implements Serializable {
             return;
         }
 
-        try (PreparedStatement findUser = conn.prepareStatement("SELECT userID FROM users WHERE username = ?")) {
+        try (PreparedStatement findUser = conn.prepareStatement("SELECT id FROM users WHERE username = ?")) {
             findUser.setString(1, blockedUserName);
             try (ResultSet userResult = findUser.executeQuery()) {
                 if (!userResult.next()) {
@@ -144,14 +144,14 @@ public class BlockUser implements Serializable {
                     return;
                 }
 
-                int blockedId = userResult.getInt("userID");
+                int blockedId = userResult.getInt("id");
                 if (blockedId == login.getUserId()) {
                     message = "You cannot unblock yourself.";
                     return;
                 }
 
                 try (PreparedStatement removeBlock = conn
-                        .prepareStatement("DELETE FROM blocks WHERE userID = ? AND blockedID = ?")) {
+                        .prepareStatement("DELETE FROM blocks WHERE id = ? AND blockedID = ?")) {
                     removeBlock.setInt(1, login.getUserId());
                     removeBlock.setInt(2, blockedId);
                     int rowsAffected = removeBlock.executeUpdate();
@@ -176,8 +176,8 @@ public class BlockUser implements Serializable {
         }
 
         try (PreparedStatement findBlockedUsers = conn.prepareStatement(
-                "SELECT u.username FROM blocks b JOIN users u ON u.userID = b.blockedID "
-                        + "WHERE b.userID = ? ORDER BY u.username")) {
+                "SELECT u.username FROM blocks b JOIN users u ON u.useridID = b.blockedID "
+                        + "WHERE b.id = ? ORDER BY u.username")) {
             findBlockedUsers.setInt(1, login.getUserId());
             try (ResultSet result = findBlockedUsers.executeQuery()) {
                 while (result.next()) {

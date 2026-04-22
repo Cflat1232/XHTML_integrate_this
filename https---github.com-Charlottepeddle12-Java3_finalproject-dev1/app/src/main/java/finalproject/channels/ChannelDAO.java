@@ -14,7 +14,7 @@ public class ChannelDAO {
     public ChannelDAO() {
         try {
             Context ctx = new InitialContext();
-            dataSource = (DataSource) ctx.lookup("java:/comp/env/jdbc/javaproject");
+            dataSource = (DataSource) ctx.lookup("java:/comp/env/jdbc/java_project");
         } catch (Exception e) {
             e.printStackTrace();
         }

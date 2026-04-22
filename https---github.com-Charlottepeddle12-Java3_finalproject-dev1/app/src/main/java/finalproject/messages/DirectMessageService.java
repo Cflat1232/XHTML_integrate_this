@@ -34,7 +34,7 @@ public class DirectMessageService {
     public void init() {
         try {
             Context ctx = new InitialContext();
-            DataSource ds = (DataSource) ctx.lookup("java:/comp/env/jdbc/javaproject");
+            DataSource ds = (DataSource) ctx.lookup("java:/comp/env/jdbc/java_project");
             conn = ds.getConnection();
         } catch (Exception e) {
             message = e.getMessage();
@@ -69,7 +69,7 @@ public class DirectMessageService {
 
         try {
             PreparedStatement userCheck = conn.prepareStatement(
-                "SELECT userID FROM users WHERE username = ?"
+                "SELECT id FROM users WHERE username = ?"
             );
             userCheck.setString(1, receiverUserName.trim());
             try (ResultSet rs = userCheck.executeQuery()) {

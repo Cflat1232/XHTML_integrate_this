@@ -30,7 +30,7 @@ public class ChannelService implements Serializable {
     public void open() {
         try {
             Context ctx = new InitialContext();
-            conn = ((DataSource) ctx.lookup("java:/comp/env/jdbc/javaproject")).getConnection();
+            conn = ((DataSource) ctx.lookup("java:/comp/env/jdbc/java_project")).getConnection();
         } catch (Exception e) { message = e.getMessage(); }
     }
 
@@ -43,7 +43,7 @@ public class ChannelService implements Serializable {
     private boolean canCreate() throws SQLException {
         PreparedStatement stmt = conn.prepareStatement(
             "SELECT 1 FROM server_member_roles smr JOIN server_roles sr ON smr.roleID=sr.roleID " +
-            "WHERE smr.userID=? AND smr.serverID=? AND sr.can_create_channel=TRUE"
+            "WHERE smr.id=? AND smr.serverID=? AND sr.can_create_channel=TRUE"
         );
         stmt.setInt(1, login.getUserId());
         stmt.setInt(2, serverID);

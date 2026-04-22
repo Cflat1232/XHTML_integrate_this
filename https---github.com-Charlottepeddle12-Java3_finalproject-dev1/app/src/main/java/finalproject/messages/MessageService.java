@@ -63,7 +63,7 @@ public class MessageService {
     public void openConnection() {
         try {
             Context ctx = new InitialContext();
-            DataSource ds = (DataSource) ctx.lookup("java:/comp/env/jdbc/javaproject");
+            DataSource ds = (DataSource) ctx.lookup("java:/comp/env/jdbc/java_project");
             conn = ds.getConnection();
             loadMessages();
         } catch (Exception e) {

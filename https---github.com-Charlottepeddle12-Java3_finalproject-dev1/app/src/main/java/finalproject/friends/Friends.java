@@ -41,7 +41,7 @@ public class Friends implements Serializable {
 	public void openConnection() {
 		try {
 			Context ctx = new InitialContext();
-			DataSource ds = (DataSource) ctx.lookup("java:/comp/env/jdbc/javaproject");
+			DataSource ds = (DataSource) ctx.lookup("java:/comp/env/jdbc/java_project");
 			conn = ds.getConnection();
 		} catch (NamingException | SQLException e) {
 			sendMessage = e.getMessage();
@@ -68,7 +68,7 @@ public class Friends implements Serializable {
 			sendMessage = "Enter a username.";
 			return;
 		}
-		try (PreparedStatement findUser = conn.prepareStatement("SELECT userID FROM users WHERE username = ?")) {
+		try (PreparedStatement findUser = conn.prepareStatement("SELECT id FROM users WHERE username = ?")) {
 			findUser.setString(1, sendFriendUserName);
 			try (ResultSet userResult = findUser.executeQuery()) {
 				if (!userResult.next()) {
@@ -150,7 +150,7 @@ public class Friends implements Serializable {
 			acceptMessage = "Enter a username.";
 			return;
 		}
-		try (PreparedStatement findUser = conn.prepareStatement("SELECT userID FROM users WHERE username = ?")) {
+		try (PreparedStatement findUser = conn.prepareStatement("SELECT id FROM users WHERE username = ?")) {
 			findUser.setString(1, acceptFriendUserName);
 			try (ResultSet userResult = findUser.executeQuery()) {
 				if (!userResult.next()) {
@@ -277,7 +277,7 @@ public class Friends implements Serializable {
 		}
 
 		try (PreparedStatement findUser = conn.prepareStatement(
-				"SELECT userID FROM users WHERE username = ?")) {
+				"SELECT id FROM users WHERE username = ?")) {
 
 			findUser.setString(1, acceptFriendUserName);
 
@@ -346,7 +346,7 @@ public class Friends implements Serializable {
 		}
 
 		try (PreparedStatement findUser = conn.prepareStatement(
-				"SELECT userID FROM users WHERE username = ?")) {
+				"SELECT id FROM users WHERE username = ?")) {
 
 			findUser.setString(1, username);
 
